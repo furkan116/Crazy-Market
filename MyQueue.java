@@ -7,6 +7,8 @@ public interface MyQueue<T> extends Iterable<T>{
 	boolean isEmpty();
 	/**kuyrugun sonuna item ekler*/
 	boolean enqueue(T item);
+
+	void yazdir(int numberOfCustomer);//TEST AMACLI
 	
 	/** kuyrugun basindan eleman cikarir*/
 	T dequeuNext();
