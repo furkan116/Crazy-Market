@@ -7,11 +7,12 @@ public class CrazyMarket<T> implements MyQueue<T>{
 	 *  numberOfCustomer ile verilen sayida
 	 * musteri hizmet gorene kadar calismaya devam eder*/
 
-	float systemTime;
+	float systemTime = (float) 0.0;
+	boolean isEmpty1 = false;
 	float[] allCutomersArriveTime;
 	float[] allCutomersRemovalTime;
 
-	public CrazyMarket(int numberOfCustomer) {
+	public CrazyMarket(int numberOfCustomer) {//Burada array kullandım çünkü sayılar arraya sırayla gidecek ve bu sıra onların IDleri gibi davranacak
 		allCutomersArriveTime = new float[numberOfCustomer+1];
 		allCutomersArriveTime[0] = (float) 0.0;
 
@@ -23,6 +24,10 @@ public class CrazyMarket<T> implements MyQueue<T>{
 			Random r = new Random();
 			customer.arrivalTime = (r.nextInt(21)/10.0);
 			allCutomersArriveTime[i] = allCutomersArriveTime[i-1] + (float) customer.arrivalTime;
+
+			if (i == 1) {
+				allCutomersRemovalTime[0] = (float) customer.arrivalTime;
+			}
 
 			customer.removalTime = ((r.nextInt(21)+10)/10.0);
 			allCutomersRemovalTime[i] = allCutomersRemovalTime[i-1] + (float) customer.removalTime;
@@ -40,24 +45,62 @@ public class CrazyMarket<T> implements MyQueue<T>{
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-        MyQueue customers = new CrazyMarket(300);
-        customers.yazdir(300);
+		Random r = new Random();
+		int numberOfCustomer = 10/*r.nextInt(1001)*/;
+        MyQueue customers = new CrazyMarket(numberOfCustomer);
+        customers.start(numberOfCustomer);
 
+	}
+
+	@Override
+	public void start(int numberOfCustomer) {
+		while (isEmpty1 == false) {
+
+			//Kasaya ulaşma süreleri sistem süresiyle aynı olanları queue ekler
+			for (int i = 1; i <= numberOfCustomer; i++) {
+				if (allCutomersArriveTime[i] == systemTime) {
+					enqueue(i);
+				}
+				else if (allCutomersArriveTime[i] > systemTime) {
+					break;
+				}
+			}
+
+			//Kasada bekleme süreleri sistem süresiyle aynı olanları queueden çıkarır
+			for (int i = 1; i <= numberOfCustomer; i++) {
+				break;
+			}
+
+			if (systemTime > 5.0) {
+				isEmpty();
+			}
+
+			systemTime();
+		}
+	}
+
+	@Override
+	public void systemTime() {
+		systemTime += 0.1;
 	}
 
 	@Override
 	public int size() {
-		return 0;
+		return queue.size();
 	}
 
 	@Override
 	public boolean isEmpty() {
-		return false;
+
+		if (size() == 0) {
+			return isEmpty1 = true;
+		}
+		return isEmpty1 = false;
 	}
 
 	@Override
-	public boolean enqueue(T item) {
-		return false;
+	public void enqueue(int ID) {
+		queue.add(ID);
 	}
 
 	@Override
@@ -73,13 +116,6 @@ public class CrazyMarket<T> implements MyQueue<T>{
 	@Override
 	public Iterator<T> iterator() {
 		return null;
-	}
-
-	@Override
-	public void yazdir(int numberOfCustomer) {//TEST AMACLI
-		for (int i = 1; i <= numberOfCustomer; i++) {
-			System.out.println(allCutomersRemovalTime[i] - allCutomersArriveTime[i]);
-		}
 	}
 
 }

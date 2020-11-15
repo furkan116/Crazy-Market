@@ -1,14 +1,19 @@
 package com.company;
 
+import java.util.LinkedList;
+
 public interface MyQueue<T> extends Iterable<T>{
-	
+
+	LinkedList<Integer> queue = new LinkedList<Integer>();
+
+	void start(int numberOfCustomers);
+	void systemTime();
+
 	/**kuruktaki toplam eleman sayisi*/
 	int size();
 	boolean isEmpty();
 	/**kuyrugun sonuna item ekler*/
-	boolean enqueue(T item);
-
-	void yazdir(int numberOfCustomer);//TEST AMACLI
+	void enqueue(int ID);//Değişiklikler yaptım
 	
 	/** kuyrugun basindan eleman cikarir*/
 	T dequeuNext();
