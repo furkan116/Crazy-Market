@@ -24,7 +24,7 @@ public class CrazyMarket<T> implements MyQueue<T>{
 			customer.arrivalTime = (r.nextInt(21)/10.0);
 			allCutomersArriveTime[i] = allCutomersArriveTime[i-1] + (float) customer.arrivalTime;
 
-			customer.removalTime = (r.nextInt(21)+1.0)/10.0;
+			customer.removalTime = ((r.nextInt(21)+10)/10.0);
 			allCutomersRemovalTime[i] = allCutomersRemovalTime[i-1] + (float) customer.removalTime;
 		}
 
@@ -37,12 +37,14 @@ public class CrazyMarket<T> implements MyQueue<T>{
 		return null;
 		
 	}
-	/*
+
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+        MyQueue customers = new CrazyMarket(300);
+        customers.yazdir(300);
 
 	}
-	*/
+
 	@Override
 	public int size() {
 		return 0;
