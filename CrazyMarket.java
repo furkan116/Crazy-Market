@@ -68,7 +68,13 @@ public class CrazyMarket<T> implements MyQueue<T>{
 
 			//Kasada bekleme süreleri sistem süresiyle aynı olanları queueden çıkarır
 			for (int i = 1; i <= numberOfCustomer; i++) {
-				break;
+				if (allCutomersRemovalTime[i] == systemTime) {
+					System.out.println("Customer" + i + " Bekleme Suresi: " + (allCutomersRemovalTime[i] - allCutomersArriveTime[i]));
+					dequeuNext(i);
+				}
+				else if (allCutomersRemovalTime[i] > systemTime) {
+					break;
+				}
 			}
 
 			if (systemTime > 5.0) {
@@ -104,7 +110,8 @@ public class CrazyMarket<T> implements MyQueue<T>{
 	}
 
 	@Override
-	public T dequeuNext() {
+	public T dequeuNext(int ID) {
+		queue.remove(ID);
 		return null;
 	}
 

@@ -16,7 +16,7 @@ public interface MyQueue<T> extends Iterable<T>{
 	void enqueue(int ID);//Değişiklikler yaptım
 	
 	/** kuyrugun basindan eleman cikarir*/
-	T dequeuNext();
+	T dequeuNext(int ID);
 	/** tekerleme metnini kullanarak bir sonraki elemani secer*/
 	T dequeuWithCounting(String tekerleme);
 
