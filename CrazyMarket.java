@@ -45,14 +45,6 @@ public class CrazyMarket implements MyQueue<Customer> {
 				customer.arrivalTime = previosCustomer.arrivalTime + customer.arrivalTime;
 			}
 
-			if (i == 1) {
-				customer.removalTime = customer.removalTime + customer.arrivalTime;
-			}
-			else {
-				Customer previosCustomer = get(i - 1);
-				customer.removalTime = previosCustomer.removalTime + customer.removalTime;
-			}
-
 			enqueue(customer);//oluşturulan müşteriyi sıraya ekler
 
 			//Burada oluşturulan müşterilerin biribirleriyle bağlanma işlemleri yapılır
@@ -94,6 +86,12 @@ public class CrazyMarket implements MyQueue<Customer> {
 	public static void main(String[] args) {
 		MyQueue customers = new CrazyMarket(10);
 		customers.start();
+	}
+
+	@Override
+	public void showInfos() {
+		int removalTime = calculateRemovalTime(head.item);
+		System.out.println("Müsterinin bekleme süresi: " + (double) (removalTime - head.item.arrivalTime)/10.0 + " Müsterinin gelme zamani: " + (double) head.item.arrivalTime/10.0 + " Müsterini ayrildigi zaman: " + (double) removalTime/10.0);
 	}
 
 	public void start() {
@@ -172,18 +170,15 @@ public class CrazyMarket implements MyQueue<Customer> {
 	}
 
 	@Override
-	public Customer dequeuNext() {//Sıranın başındaki müşteriyi çıkarır
+	public void dequeuNext() {//Sıranın başındaki müşteriyi çıkarır
 		if (head == null) {
-			return null;
+			return;
 		}
 
-		System.out.println("Müsterinin bekleme süresi: " + (double) (head.item.removalTime - head.item.arrivalTime)/10.0 + " Müsterinin gelme zamani: " + (double) head.item.arrivalTime/10.0 + " Müsterini ayrildigi zaman: " + (double) head.item.removalTime/10.0);
-
+		showInfos();
 		head = head.next;
 
 		size--;
-
-		return head.item;
 	}
 
 	@Override
@@ -198,6 +193,7 @@ public class CrazyMarket implements MyQueue<Customer> {
 		if (head == null)
 			return;
 
+		showInfos();
 		Node temp = head;
 
 		if (position == 1)

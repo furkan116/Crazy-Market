@@ -2,6 +2,7 @@ package com.company;
 
 public interface MyQueue<T> extends Iterable<T>{
 
+	void showInfos();
 	void start();
 	/**kuruktaki toplam eleman sayisi*/
 	int size();
@@ -14,7 +15,7 @@ public interface MyQueue<T> extends Iterable<T>{
 	int indexOf(T cust);
 	
 	/** kuyrugun basindan eleman cikarir*/
-	T dequeuNext();
+	void dequeuNext();
 
 	/** tekerleme metnini kullanarak bir sonraki elemani secer*/
 	T dequeuWithCounting(String tekerleme);
