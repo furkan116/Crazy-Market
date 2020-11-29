@@ -11,6 +11,7 @@ public class CrazyMarket implements MyQueue<Customer> {
 			+ "\nTerazi lastik jimnastik "
 			+ "\nBiz size geldik bitlendik Hamama gittik temizlendik.";
 
+	int systemTime = 0;
 	private Node top;
 	private Node head;
 	private Node tail;
@@ -43,6 +44,10 @@ public class CrazyMarket implements MyQueue<Customer> {
 			if (i > 1) {//Customerlar için kasaya ulaşma sürelerini bulur
 				Customer previosCustomer = get(i - 1);
 				customer.arrivalTime = previosCustomer.arrivalTime + customer.arrivalTime;
+			}
+
+			if (i == 1) {
+				systemTime += customer.removalTime;
 			}
 
 			enqueue(customer);//oluşturulan müşteriyi sıraya ekler
@@ -84,14 +89,14 @@ public class CrazyMarket implements MyQueue<Customer> {
 	}
 
 	public static void main(String[] args) {
-		MyQueue customers = new CrazyMarket(10);
+		MyQueue customers = new CrazyMarket(50);
 		customers.start();
 	}
 
 	@Override
 	public void showInfos() {
 		int removalTime = calculateRemovalTime(head.item);
-		System.out.println("Müsterinin bekleme süresi: " + (double) (removalTime - head.item.arrivalTime)/10.0 + " Müsterinin gelme zamani: " + (double) head.item.arrivalTime/10.0 + " Müsterini ayrildigi zaman: " + (double) removalTime/10.0);
+		System.out.println("Müsterinin bekleme süresi: " + (double) (systemTime - head.item.arrivalTime)/10.0 + " Müsterinin gelme zamani: " + (double) head.item.arrivalTime/10.0 + " Müsterini ayrildigi zaman: " + (double) systemTime/10.0);
 	}
 
 	public void start() {
@@ -141,6 +146,7 @@ public class CrazyMarket implements MyQueue<Customer> {
 			if (current.item.equals(customer)) {
 				break;
 			}
+
 		}
 
 		return removalTime;
@@ -174,6 +180,8 @@ public class CrazyMarket implements MyQueue<Customer> {
 		if (head == null) {
 			return;
 		}
+
+		systemTime += head.item.removalTime;
 
 		showInfos();
 		head = head.next;
@@ -210,6 +218,8 @@ public class CrazyMarket implements MyQueue<Customer> {
 		if (temp == null || temp.next == null) {
 			return;
 		}
+
+		systemTime += temp.item.removalTime;
 
 		Node next = temp.next.next;
 
