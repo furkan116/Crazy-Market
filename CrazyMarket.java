@@ -1,83 +1,97 @@
 package com.company;
+
 import java.util.Iterator;
 import java.util.Random;
 
-public class CrazyMarket<T> implements MyQueue<T>{
+public class CrazyMarket implements MyQueue<Customer>{
+	/**default tekerleme
+	 * */
+	String tekerleme = "O piti piti karamela sepeti "
+			+ "\nTerazi lastik jimnastik "
+			+ "\nBiz size geldik bitlendik Hamama gittik temizlendik.";
+			
 	/**
-	 *  numberOfCustomer ile verilen sayida
+	 *  numberOfCustumer ile verilen sayida  
 	 * musteri hizmet gorene kadar calismaya devam eder*/
 
-	float systemTime = (float) 0.0;
+	int systemTime =  0;
 	boolean isEmpty1 = false;
-	float[] allCutomersArriveTime;
-	float[] allCutomersRemovalTime;
+	int[] allCutomersArriveTime;
+	int[] allCutomersRemovalTime;
 
-	public CrazyMarket(int numberOfCustomer) {//Burada array kullandım çünkü sayılar arraya sırayla gidecek ve bu sıra onların IDleri gibi davranacak
-		allCutomersArriveTime = new float[numberOfCustomer+1];
-		allCutomersArriveTime[0] = (float) 0.0;
+	public CrazyMarket(int numberOfCustomer) {
+		allCutomersArriveTime = new int[numberOfCustomer + 1];
+		allCutomersArriveTime[0] = 0;
 
-		allCutomersRemovalTime = new float[numberOfCustomer+1];
-		allCutomersRemovalTime[0] = (float) 0.0;
+		allCutomersRemovalTime = new int[numberOfCustomer + 1];
+		allCutomersRemovalTime[0] = 0;
 
 		for (int i = 1; i <= numberOfCustomer; i++) {
 			Customer customer = new Customer();
 			Random r = new Random();
-			customer.arrivalTime = (r.nextInt(21)/10.0);
-			allCutomersArriveTime[i] = allCutomersArriveTime[i-1] + (float) customer.arrivalTime;
+			customer.arrivalTime = r.nextInt(21);
+			allCutomersArriveTime[i] = allCutomersArriveTime[i-1] + customer.arrivalTime;
 
 			if (i == 1) {
-				allCutomersRemovalTime[0] = (float) customer.arrivalTime;
+				allCutomersRemovalTime[0] = customer.arrivalTime;
 			}
 
-			customer.removalTime = ((r.nextInt(21)+10)/10.0);
-			allCutomersRemovalTime[i] = allCutomersRemovalTime[i-1] + (float) customer.removalTime;
+			customer.removalTime = (r.nextInt(21)+10);
+			allCutomersRemovalTime[i] = allCutomersRemovalTime[i-1] + customer.removalTime;
 		}
-
 	}
 
+	/**
+	 *  numberOfCustumer ile verilen sayida  
+	 * musteri hizmet gorene kadar calismaya devam eder, 
+	 * calisirken verilen tekerlemeyi kullanir*/
+	public CrazyMarket(int numberOfCustomer, String tekerleme) {
+		
+	}
 
-	/** kuyrugun basindaki musteriyi ya da tekerleme
+	/** kuyrugun basindaki musteriyi yada tekerleme 
 	 * ile buldugu musteriyi return eder*/
 	public Customer chooseCustomer() {
 		return null;
 		
 	}
-
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Random r = new Random();
 		int numberOfCustomer = 10/*r.nextInt(1001)*/;
-        MyQueue customers = new CrazyMarket(numberOfCustomer);
-        customers.start(numberOfCustomer);
-
+		MyQueue customers = new CrazyMarket(numberOfCustomer);
+		customers.start(numberOfCustomer);
 	}
 
-	@Override
 	public void start(int numberOfCustomer) {
 		while (isEmpty1 == false) {
 
 			//Kasaya ulaşma süreleri sistem süresiyle aynı olanları queue ekler
-			for (int i = 1; i <= numberOfCustomer; i++) {
+			/*for (int i = 1; i <= numberOfCustomer; i++) {
 				if (allCutomersArriveTime[i] == systemTime) {
 					enqueue(i);
 				}
 				else if (allCutomersArriveTime[i] > systemTime) {
 					break;
 				}
-			}
+			}*/
 
 			//Kasada bekleme süreleri sistem süresiyle aynı olanları queueden çıkarır
-			for (int i = 1; i <= numberOfCustomer; i++) {
+			for (int i = 1; i <= size(); i++) {
+
 				if (allCutomersRemovalTime[i] == systemTime) {
-					System.out.println("Customer" + i + " Bekleme Suresi: " + (allCutomersRemovalTime[i] - allCutomersArriveTime[i]));
-					dequeuNext(i);
+					System.out.print("Customer: " + i + " ");
+					System.out.print("Bekleme Suresi: " + ((allCutomersRemovalTime[i] - allCutomersArriveTime[i])/10.0) + " ");
+					System.out.print("Kasaya geldigi zaman: " + (double)(allCutomersArriveTime[i]/10.0) + " ");
+					System.out.print("Kasaya ayrildigi zaman: " + (double)(allCutomersRemovalTime[i]/10.0) + "\n");
+
 				}
 				else if (allCutomersRemovalTime[i] > systemTime) {
 					break;
 				}
 			}
 
-			if (systemTime > 5.0) {
+			if (systemTime > 50) {
 				isEmpty();
 			}
 
@@ -87,42 +101,68 @@ public class CrazyMarket<T> implements MyQueue<T>{
 
 	@Override
 	public void systemTime() {
-		systemTime += 0.1;
+		systemTime = systemTime + 1;
+	}
+
+	private Node top;
+	private int size;
+	private class Node{
+		Node next;
+		Customer item;
+		public Node(Customer item) {
+			this.item = item;
+			this.next = null;
+			size = 0;
+		}
 	}
 
 	@Override
 	public int size() {
-		return queue.size();
+		return 300;
 	}
 
 	@Override
 	public boolean isEmpty() {
+		return false;
+	}
 
-		if (size() == 0) {
-			return isEmpty1 = true;
+	@Override
+	public boolean enqueue(Customer item) {
+
+		Node newTop = new Node(item);
+		newTop.next = top;
+		top = newTop;
+		size++;
+		return true;
+	}
+
+	@Override
+	public Customer dequeuNext() {
+		return null;
+	}
+
+	@Override
+	public Customer dequeuWithCounting(String tekerleme) {
+		return null;
+	}
+
+	@Override
+	public Iterator<Customer> iterator() {
+		return new StackIterator();
+	}
+
+	private class StackIterator implements Iterator<Customer>{
+		private Node itr = top;
+		@Override
+		public boolean hasNext() {
+			return itr != null;
 		}
-		return isEmpty1 = false;
-	}
 
-	@Override
-	public void enqueue(int ID) {
-		queue.add(ID);
+		@Override
+		public Customer next() {
+			Customer item = itr.item;
+			itr = itr.next;
+			return item;
+		}
 	}
-
-	@Override
-	public T dequeuNext(int ID) {
-		queue.remove(ID);
-		return null;
-	}
-
-	@Override
-	public T dequeuWithCounting(String tekerleme) {
-		return null;
-	}
-
-	@Override
-	public Iterator<T> iterator() {
-		return null;
-	}
-
 }
