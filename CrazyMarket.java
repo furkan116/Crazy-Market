@@ -102,10 +102,9 @@ public class CrazyMarket implements MyQueue<Customer> {
 	public void start() {
 		Node current = head;
 
-		while (current != null) {
+		while (size > 0) {
 			//Kasadaki müşterilerin toplam bekleme sürelerini hesaplar ve süreye göre yapılması gereken çıkarma işlemini seçer
-			Customer customer = current.item;
-			int removalTime = calculateRemovalTime(customer);
+			int removalTime = calculateRemovalTime();
 
 			if (removalTime > 100) {
 				dequeuNext();
@@ -118,8 +117,6 @@ public class CrazyMarket implements MyQueue<Customer> {
 					deleteNode(customerIndexToRemove);
 				}
 			}
-
-			current = current.next;
 		}
 	}
 
@@ -137,16 +134,17 @@ public class CrazyMarket implements MyQueue<Customer> {
 		return count;
 	}
 
-	public int calculateRemovalTime(Customer customer) {//Müşterilerin ayrılma zamanlarını birbirine ekleyerek toplam ayrılma zamanını bulur
+	public int calculateRemovalTime() {//Müşterilerin ayrılma zamanlarını birbirine ekleyerek toplam ayrılma zamanını bulur
 		Node current = head;
-		int removalTime = customer.removalTime;
+		int removalTime = 0;
 
-		while (current != null) {
-			removalTime += current.item.removalTime;
-
-			if (current.item.equals(customer)) {
+		for (int i = 1; i <= size; i++) {
+			if (current == null) {
 				break;
 			}
+
+			removalTime += current.item.removalTime;
+			current = current.next;
 
 		}
 
@@ -195,7 +193,7 @@ public class CrazyMarket implements MyQueue<Customer> {
 		int vowels = countVowels(str);
 		int randomCustomerIndexToRemove = (vowels - size * (vowels / size));
 
-		return get(randomCustomerIndexToRemove);
+		return get(randomCustomerIndexToRemove + 1);
 	}
 
 	public void deleteNode(int position) {//Tekerlemedeki sesli harf sayısına göre bulunan müşteriyi çıkarır
@@ -205,7 +203,7 @@ public class CrazyMarket implements MyQueue<Customer> {
 
 		Node temp = head;
 
-		if (position == 1)
+		if (position == 0)
 		{
 			showInfos(head.item);
 			head = temp.next;
@@ -213,7 +211,7 @@ public class CrazyMarket implements MyQueue<Customer> {
 			return;
 		}
 
-		for (int i=1; temp!=null && i < position; i++) {
+		for (int i=0; temp!=null && i < position; i++) {
 			temp = temp.next;
 		}
 
