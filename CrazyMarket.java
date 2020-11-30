@@ -38,6 +38,7 @@ public class CrazyMarket implements MyQueue<Customer> {
 
 		for (int i = 1; i <= numberOfCustomer; i++) {
 			Customer customer = new Customer();
+			customer.customerID = i;
 			customer.arrivalTime = r.nextInt(21);
 			customer.removalTime = r.nextInt(21) + 10;
 
@@ -94,9 +95,8 @@ public class CrazyMarket implements MyQueue<Customer> {
 	}
 
 	@Override
-	public void showInfos() {
-		int removalTime = calculateRemovalTime(head.item);
-		System.out.println("Müsterinin bekleme süresi: " + (double) (systemTime - head.item.arrivalTime)/10.0 + " Müsterinin gelme zamani: " + (double) head.item.arrivalTime/10.0 + " Müsterini ayrildigi zaman: " + (double) systemTime/10.0);
+	public void showInfos(Customer item) {
+		System.out.println("Müsterinin ID kodu: " + item.customerID + " Müsterinin bekleme süresi: " + (double) (systemTime - item.arrivalTime)/10.0 + " Müsterinin gelme zamani: " + (double) item.arrivalTime/10.0 + " Müsterini ayrildigi zaman: " + (double) systemTime/10.0);
 	}
 
 	public void start() {
@@ -107,9 +107,10 @@ public class CrazyMarket implements MyQueue<Customer> {
 			Customer customer = current.item;
 			int removalTime = calculateRemovalTime(customer);
 
-			if (removalTime > 10) {
+			if (removalTime > 100) {
 				dequeuNext();
-			} else {
+			}
+			else {
 				Customer customerToRemove = dequeuWithCounting(tekerleme);
 				int customerIndexToRemove = indexOf(customerToRemove);
 
@@ -183,7 +184,7 @@ public class CrazyMarket implements MyQueue<Customer> {
 
 		systemTime += head.item.removalTime;
 
-		showInfos();
+		showInfos(head.item);
 		head = head.next;
 
 		size--;
@@ -198,14 +199,15 @@ public class CrazyMarket implements MyQueue<Customer> {
 	}
 
 	public void deleteNode(int position) {//Tekerlemedeki sesli harf sayısına göre bulunan müşteriyi çıkarır
-		if (head == null)
+		if (head == null) {
 			return;
+		}
 
-		showInfos();
 		Node temp = head;
 
 		if (position == 1)
 		{
+			showInfos(head.item);
 			head = temp.next;
 			size--;
 			return;
@@ -220,6 +222,8 @@ public class CrazyMarket implements MyQueue<Customer> {
 		}
 
 		systemTime += temp.item.removalTime;
+
+		showInfos(temp.item);
 
 		Node next = temp.next.next;
 
