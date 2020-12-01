@@ -25,7 +25,6 @@ public class CrazyMarket implements MyQueue<Customer> {
 			this.item = item;
 			this.next = null;
 		}
-
 	}
 
 	/**
@@ -48,7 +47,7 @@ public class CrazyMarket implements MyQueue<Customer> {
 			}
 
 			if (i == 1) {
-				systemTime += customer.removalTime;
+				systemTime += customer.arrivalTime;
 			}
 
 			enqueue(customer);//oluşturulan müşteriyi sıraya ekler
@@ -94,7 +93,6 @@ public class CrazyMarket implements MyQueue<Customer> {
 		customers.start();
 	}
 
-	@Override
 	public void showInfos(Customer item) {
 		System.out.println("Müsterinin ID kodu: " + item.customerID + " Müsterinin bekleme süresi: " + (double) (systemTime - item.arrivalTime)/10.0 + " Müsterinin gelme zamani: " + (double) item.arrivalTime/10.0 + " Müsterini ayrildigi zaman: " + (double) systemTime/10.0);
 	}
@@ -104,7 +102,7 @@ public class CrazyMarket implements MyQueue<Customer> {
 
 		while (size > 0) {
 			//Kasadaki müşterilerin toplam bekleme sürelerini hesaplar ve süreye göre yapılması gereken çıkarma işlemini seçer
-			int removalTime = calculateRemovalTime();
+			int removalTime = calculateRemovalTime(current.item);
 
 			if (removalTime > 100) {
 				dequeuNext();
@@ -134,16 +132,17 @@ public class CrazyMarket implements MyQueue<Customer> {
 		return count;
 	}
 
-	public int calculateRemovalTime() {//Müşterilerin ayrılma zamanlarını birbirine ekleyerek toplam ayrılma zamanını bulur
+	public int calculateRemovalTime(Customer customer) {//Müşterilerin ayrılma zamanlarını birbirine ekleyerek toplam ayrılma zamanını bulur
 		Node current = head;
-		int removalTime = 0;
+		int removalTime = customer.removalTime;
 
-		for (int i = 1; i <= size; i++) {
-			if (current == null) {
+		while (current != null) {
+			removalTime += current.item.removalTime;
+
+			if (current.item.equals(customer)) {
 				break;
 			}
 
-			removalTime += current.item.removalTime;
 			current = current.next;
 
 		}
@@ -193,7 +192,11 @@ public class CrazyMarket implements MyQueue<Customer> {
 		int vowels = countVowels(str);
 		int randomCustomerIndexToRemove = (vowels - size * (vowels / size));
 
-		return get(randomCustomerIndexToRemove + 1);
+		return get(randomCustomerIndexToRemove+1);
+	}
+
+	public void sizeTime() {
+
 	}
 
 	public void deleteNode(int position) {//Tekerlemedeki sesli harf sayısına göre bulunan müşteriyi çıkarır
@@ -238,15 +241,14 @@ public class CrazyMarket implements MyQueue<Customer> {
 	@Override
 	public Customer get(int index) {
 		Node current = head;
-		int i = 1;
+		int i = 1;//BURAYA DİKKAT
+
 
 		while (current != null) {
 			if (i == index) {
 				return current.item;
 			}
-
 			i++;
-
 			current = current.next;
 		}
 

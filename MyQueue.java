@@ -2,7 +2,6 @@ package com.company;
 
 public interface MyQueue<T> extends Iterable<T>{
 
-	void showInfos(Customer item);
 	void start();
 	/**kuruktaki toplam eleman sayisi*/
 	int size();
