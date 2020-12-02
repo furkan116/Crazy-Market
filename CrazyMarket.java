@@ -88,7 +88,7 @@ public class CrazyMarket implements MyQueue<Customer> {
 	}
 
 	public void showInfos(Customer item) {
-		System.out.println("Müsterinin ID kodu: " + item.customerID + " Müsterinin bekleme süresi: " + (double) (systemTime - item.arrivalTime)/10.0 + " Müsterinin gelme zamani: " + (double) item.arrivalTime/10.0 + " Müsterini ayrildigi zaman: " + (double) systemTime/10.0);
+		System.out.println("Müsterinin ID kodu: " + item.customerID + " Müsterinin bekleme süresi: " + (double) ((systemTime + item.removalTime) - item.arrivalTime)/10.0 + " Müsterinin gelme zamani: " + (double) item.arrivalTime/10.0 + " Müsterini ayrildigi zaman: " + (double) (systemTime + item.removalTime)/10.0);
 	}
 
 	public void start(int numberOfCustomer) {
@@ -126,21 +126,17 @@ public class CrazyMarket implements MyQueue<Customer> {
 			}
 			current = head;
 
-			for(int j = 1; j <= size; j++) {
-				if (deletingTime == systemTime || deletingTime == 0) {
-					//Kasadaki müşterilerin toplam bekleme sürelerini hesaplar ve süreye göre yapılması gereken çıkarma işlemini seçer
-					int removalTime = calculateRemovalTime(current.item);
-
-					if (removalTime > 100 || size == 1) {
-						dequeuNext();
-					}
-					else {
-						Customer customerToRemove = dequeuWithCounting(tekerleme);
-						int customerIndexToRemove = indexOf(customerToRemove);
-
-						if (customerIndexToRemove > -1) {
-							deleteNode(customerIndexToRemove);
-						}
+			if ((deletingTime == systemTime || deletingTime == 0) && size > 0) {
+				//Kasadaki müşterilerin toplam bekleme sürelerini hesaplar ve süreye göre yapılması gereken çıkarma işlemini seçer
+				int removalTime = calculateRemovalTime(current.item);
+				if (removalTime > 100 || size == 1) {
+					dequeuNext();
+				}
+				else {
+					Customer customerToRemove = dequeuWithCounting(tekerleme);
+					int customerIndexToRemove = indexOf(customerToRemove);
+					if (customerIndexToRemove > -1) {
+						deleteNode(customerIndexToRemove);
 					}
 				}
 			}
