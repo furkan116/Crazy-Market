@@ -222,10 +222,6 @@ public class CrazyMarket implements MyQueue<Customer> {
 		return get(randomCustomerIndexToRemove+1);
 	}
 
-	public void sizeTime() {
-
-	}
-
 	public void deleteNode(int position) {//Tekerlemedeki sesli harf sayısına göre bulunan müşteriyi çıkarır
 		if (head == null) {
 			return;
@@ -233,16 +229,15 @@ public class CrazyMarket implements MyQueue<Customer> {
 
 		Node temp = head;
 
-		if (position == 0)
-		{
+		if (position == 1) {
 			showInfos(head.item);
+			deletingTime += head.item.removalTime;
 			head = temp.next;
 			size--;
-			deletingTime += head.item.removalTime;
 			return;
 		}
 
-		for (int i=0; temp!=null && i < position; i++) {
+		for (int i = 2; temp!=null && i < position; i++) {
 			temp = temp.next;
 		}
 
@@ -250,9 +245,11 @@ public class CrazyMarket implements MyQueue<Customer> {
 			return;
 		}
 
-		deletingTime += temp.item.removalTime;
+		deletingTime += temp.next.item.removalTime;
 
-		showInfos(temp.item);
+		showInfos(temp.next.item);
+
+		Node hold = temp;
 
 		Node next = temp.next.next;
 
