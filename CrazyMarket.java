@@ -54,11 +54,12 @@ public class CrazyMarket implements MyQueue<Customer> {
 
 			allCustomers[i][0] = customer.customerID;
 			allCustomers[i][1] = allCustomers[i-1][1] + customer.arrivalTime;
-			allCustomers[i][2] = customer.removalTime;
 
 			if (i == 1) {
 				customer.removalTime = customer.arrivalTime + customer.removalTime;
 			}
+
+			allCustomers[i][2] = customer.removalTime;
 
 		}
 	}
@@ -102,6 +103,8 @@ public class CrazyMarket implements MyQueue<Customer> {
 					customer.customerID = allCustomers[j][0];
 					customer.arrivalTime = allCustomers[j][1];
 					customer.removalTime = allCustomers[j][2];
+
+
 					enqueue(customer);//oluşturulan müşteriyi sıraya ekler
 
 					//Burada oluşturulan müşterilerin biribirleriyle bağlanma işlemleri yapılır
@@ -129,7 +132,7 @@ public class CrazyMarket implements MyQueue<Customer> {
 			if ((deletingTime == systemTime || deletingTime == 0) && size > 0) {
 				//Kasadaki müşterilerin toplam bekleme sürelerini hesaplar ve süreye göre yapılması gereken çıkarma işlemini seçer
 				int removalTime = calculateRemovalTime(current.item);
-				if (removalTime > 100 || size == 1) {
+				if (removalTime > 100) {
 					dequeuNext();
 				}
 				else {
@@ -164,11 +167,11 @@ public class CrazyMarket implements MyQueue<Customer> {
 		int removalTime = customer.removalTime;
 
 		while (current != null) {
-			removalTime += current.item.removalTime;
 
 			if (current.item.equals(customer)) {
 				break;
 			}
+			removalTime += current.item.removalTime;
 
 			current = current.next;
 
@@ -184,7 +187,7 @@ public class CrazyMarket implements MyQueue<Customer> {
 
 	@Override
 	public boolean isEmpty() {//Sıradaki müşteri olup olmadığını belirtir
-		if (size == 0 && systemTime > 100) {
+		if (size == 0 && systemTime > 100) {//normalde sadece size kontrol edip dönmeli ama benim kodum için ekstra olarak systemTime için kontrolde yapıyor
 			return true;
 		}
 
@@ -206,7 +209,13 @@ public class CrazyMarket implements MyQueue<Customer> {
 			return;
 		}
 
-		deletingTime += head.item.removalTime;
+		if (head.item.customerID == 1) {
+			deletingTime = head.item.arrivalTime + head.item.removalTime;
+		}
+		else {
+			deletingTime += head.item.removalTime;
+		}
+
 		showInfos(head.item);
 
 		head = head.next;
@@ -241,7 +250,7 @@ public class CrazyMarket implements MyQueue<Customer> {
 			temp = temp.next;
 		}
 
-		if (temp == null || temp.next == null) {
+		if (temp.next == null || temp.next.next == null) {
 			return;
 		}
 
@@ -249,11 +258,7 @@ public class CrazyMarket implements MyQueue<Customer> {
 
 		showInfos(temp.next.item);
 
-		Node hold = temp;
-
-		Node next = temp.next.next;
-
-		temp.next = next;
+		temp.next = temp.next.next;
 
 		size--;
 	}
