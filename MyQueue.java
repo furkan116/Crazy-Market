@@ -2,8 +2,7 @@ package com.company;
 
 public interface MyQueue<T> extends Iterable<T>{
 
-	void showInfos(Customer item);
-	void start();
+	void start(int numberOfCustomer);
 	/**kuruktaki toplam eleman sayisi*/
 	int size();
 	boolean isEmpty();
