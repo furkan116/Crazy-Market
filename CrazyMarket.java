@@ -19,7 +19,7 @@ public class CrazyMarket implements MyQueue<Customer> {
 	int[][] allCustomers;
 	int deletingTime = 0;
 
-	private class Node {
+	private class Node {//Kuyruk için değer atamaları yapacak class
 		Node next;
 		Customer item;
 
@@ -41,7 +41,7 @@ public class CrazyMarket implements MyQueue<Customer> {
 		allCustomers[0][1] = 0;
 		allCustomers[0][2] = 0;
 
-		for (int i = 1; i <= numberOfCustomer; i++) {
+		for (int i = 1; i <= numberOfCustomer; i++) {//Başta oluşan değerleri diziye atıyorum ve zamanı gelince diziden çıkarıp kuyruğu atanıyor
 			Customer customer = new Customer();
 			customer.customerID = i;
 			customer.arrivalTime = r.nextInt(21);
@@ -72,19 +72,20 @@ public class CrazyMarket implements MyQueue<Customer> {
 	 * kuyrugun basindaki musteriyi yada tekerleme
 	 * ile buldugu musteriyi return eder
 	 */
-	public Customer chooseCustomer() {
+	public Customer chooseCustomer() {//Kullanmadım ama aynı işi yapan void deleteNode(int position) var
 		return null;
 
 	}
 
 	public static void main(String[] args) {
-		int numberOfCustomer = 10;
+		Random r = new Random();
+		int numberOfCustomer = r.nextInt(75) + 25;//Günde 25 ile 99 arası Müşteri bakabilsin diye böyle bir ayarı var
 		MyQueue customers = new CrazyMarket(numberOfCustomer);
 		customers.start(numberOfCustomer);
 	}
 
-	public void showInfos(Customer item) {
-		System.out.println("Müsterinin ID kodu: " + item.customerID + " Müsterinin bekleme süresi: " + (double) ((systemTime + item.removalTime) - item.arrivalTime)/10.0 + " Müsterinin gelme zamani: " + (double) item.arrivalTime/10.0 + " Müsterini ayrildigi zaman: " + (double) (systemTime + item.removalTime)/10.0);
+	public void showInfos(Customer item) {//Müşteri Kuyruktan çıktığı anda değerlerini gösterir
+		System.out.println("Müsterinin ID kodu: " + item.customerID + " Müsterinin kasada bekleme süresi: " + (double) ((systemTime + item.removalTime) - item.arrivalTime)/10.0 + " Müsterinin gelme zamani: " + (double) item.arrivalTime/10.0 + " Müsterini ayrildigi zaman: " + (double) (systemTime + item.removalTime)/10.0);
 	}
 
 	public void start(int numberOfCustomer) {
@@ -93,7 +94,7 @@ public class CrazyMarket implements MyQueue<Customer> {
 		while (!isEmpty()) {
 
 			for(int j = 1; j <= numberOfCustomer; j++) {
-				if (allCustomers[j][1] == systemTime) {
+				if (allCustomers[j][1] == systemTime) {//Dizideki zamanı gelen müşteriyi kuyruğa atar
 					Customer customer = new Customer();
 					customer.customerID = allCustomers[j][0];
 					customer.arrivalTime = allCustomers[j][1];
@@ -107,13 +108,7 @@ public class CrazyMarket implements MyQueue<Customer> {
 						tail = top;
 					}
 					else {
-						if (j > numberOfCustomer) {
-							tail.next = null;
-						}
-						else {
-							tail.next = top;
-						}
-
+						tail.next = top;
 						tail = top;
 					}
 				}
@@ -137,12 +132,11 @@ public class CrazyMarket implements MyQueue<Customer> {
 					}
 				}
 			}
+			systemTime += 1;
 
 			if ((deletingTime < systemTime) && deletingTime != 0) {
-				systemTime = deletingTime;
+				deletingTime = systemTime;
 			}
-
-			systemTime += 1;
 		}
 	}
 
@@ -179,7 +173,7 @@ public class CrazyMarket implements MyQueue<Customer> {
 
 	@Override
 	public boolean isEmpty() {//Sıradaki müşteri olup olmadığını belirtir
-		if (size == 0 && systemTime > 100) {//normalde sadece size kontrol edip dönmeli ama benim kodum için ekstra olarak systemTime için kontrolde yapıyor
+		if (size == 0 && systemTime > 200) {//normalde sadece size kontrol edip dönmeli ama benim kodum için ekstra olarak systemTime için kontrolde yapıyor çünkü systemTime daha başındakyan kuyrukta kimse yoktur o yüzden biraz bekliyor
 			return true;
 		}
 
@@ -201,10 +195,16 @@ public class CrazyMarket implements MyQueue<Customer> {
 			return;
 		}
 
+
 		deletingTime += head.item.removalTime;
 		showInfos(head.item);
 
-		head = head.next;
+		if (size == 1){
+			head = null;
+		}
+		else {
+			head = head.next;
+		}
 
 		size--;
 	}
@@ -257,9 +257,9 @@ public class CrazyMarket implements MyQueue<Customer> {
 	}
 
 	@Override
-	public Customer get(int index) {
+	public Customer get(int index) {//Kuyruktan çıkan müşteriyi bulur
 		Node current = head;
-		int i = 1;//BURAYA DİKKAT
+		int i = 1;
 
 
 		while (current != null) {
@@ -274,7 +274,7 @@ public class CrazyMarket implements MyQueue<Customer> {
 	}
 
 	@Override
-	public int indexOf(Customer customer) {
+	public int indexOf(Customer customer) {//Kuyruktan çıkan müşteriyi bulur
 		Node current = head;
 		int i = 1;
 		Boolean found = false;
@@ -297,7 +297,7 @@ public class CrazyMarket implements MyQueue<Customer> {
 		}
 	}
 
-	private class StackIterator implements Iterator<Customer>{
+	private class StackIterator implements Iterator<Customer>{//burada kuyruktaki müşteriden sonra başka bir müşteri var mı onu kontrol eder
 		private Node itr = top;
 
 		@Override
